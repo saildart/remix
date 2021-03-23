@@ -1,5 +1,5 @@
-# /data/DART.remix/README.md
-#              R       E        M       I       X
+# saildart/remix/README.md
+#       R       E        M       I       X
         Execute the source file **remix.c**
         to make the binary at path **/usr/local/bin/remix**
         or bash command 'source remix.c'
@@ -39,12 +39,10 @@
                 UTF-8 text cooked
                 
 # The unified 'C' program for after 2021 will be one large file named
-
         remix.c
         
 # It is now broken up into 12 pieces
 ## in the hope of re-factoring towards improved understanding
-
         remix.c      
         main_bigtop.c
         structures.c  
@@ -71,7 +69,7 @@
 #       R       E       L       I       N       K
 ## symbolic-link convenient pathnames to subsets of the /data8/ binary files
 
-```
+```bash
 t1;awk '{printf("ln -s /data8/sn/%s /data8/nickname/%s\n",$1,$2)}' \
         data/Disassemble./sn_fn|bash;t2
 ```
@@ -99,12 +97,12 @@ done
        Avoid PARTITION table
        Avoid FILE SYSTEM       
        Copy **flat_DART_data8** to SD without file system or partition table
-```
+```bash
 sudo bash
 time dd if=/d/large/flat_DART_data8 of=/dev/sdd oflag=direct status=progress bs=64M
+```
 90314177512 bytes (90 GB, 84 GiB) copied, 5963 s, 15.1 MB/s
 1345+1 records in
 1345+1 records out
 90314177512 bytes (90 GB, 84 GiB) copied, 5966.4 s, 15.1 MB/s
-```
 \#real	99m26.408s
