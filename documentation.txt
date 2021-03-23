@@ -1,0 +1,284 @@
+// documentation.txt
+
+/* Read the 229 reels of concatenated 9-track DART tapes
+ *                 from the 85GB file named: /large/flat_DART_data8
+ *     lookup blob hash serial numbers from: /large/sn-hash8-accession-by-sn
+ *      partition into read buffer segments: /large/csv/seek_46_segments.csv
+ * ------------------------------------------------------------------------------------ *
+ *      D       A       R       T       -       R       E       M       I       X       *
+ *                                                                                      *
+ *  C       O       M       B       I       N       A       T       I       O       N   *
+ * ------------------------------------------------------------------------------------ *
+ echo -n 'copyrightⒸ2016-2018 Bruce_Guenther_Baumgart software_license:GPL-v3.'
+
+ INPUT file pathnames and MD5 values are given in the next paragraph.
+ Setup the OUTPUT absolute directory pathnames like so,
+
+        mkdir -p /large/{csv,log,unix}  /large/{data8,text}/sn
+
+ Typical execution is:
+
+        time remix-combo
+
+cd /large/csv
+cat nametag.[0-9][0-9]    >cat_nametag 
+cat blobsnhash.[0-9][0-9] >cat_blobsnhash
+--------------------------------------------------------------------------------------- *
+
+// This Tape buffer is large enough to hold the GAP record of 382438 words.
+// 8 * 382,438 words == 3,059,504 bytes < mysql MEDIUMBLOB at 16,777,215 bytes.
+pdp10_word Tape[390000]; // pdp10 words of 8 bytes each is almost 3 MB.
+pdp10_word Template[36]; // Copy from first 36. words of a -3 START_FILE tape record
+//
+//      DART records 6,,000013 for BOT and EOT tape events
+//
+/* The HEADER AND TRAILER BLOCKS:
+   Word  0: version,,length
+   "version" is the positive version number of the DART that created this tape (VERSION);
+   "length" is always octal 013, decimal 11. the length of the data following, includes the rotated checksum word below.
+   Word  1: 'DART  ' sixbit DART
+   Word  2: '*HEAD*' or '*TAIL*' sixbit, indicates Header or Trailer block,
+   Word  3: time,date	in file system format
+           Bits 13:23 are time in mins, bits 24:35 are date.
+           Bits 4:12 are unused (considered high minutes).
+           DART Version 5: Bits 0-2 are high date.
+           DART Version 6: Bit 3 means this is time from prev media
+   Word  4: ppn 		the name of the person running Dart.
+   Word  5: class,,tapno	Tape number of this tape
+
+   Dump class of this dump
+   The top bits of tapno indicate which
+   sequence of tapes this nbr is in.
+
+   Word  6: relative dump,,absolute dump	(relative is within this tape)
+   Word  7: tape position in feet from load point
+
+   Word  8:	 0		reserved for future use
+   Word  9:	-1		all bits on
+   Word 10:	 0		all bits off
+   Word 11.	rotated checksum of words 1 through 12 above.
+*/
+
+//
+//      DART tape nametag per DART data record
+//
+
+--------------------------------------------------------------------------------------- *
+INPUT blob md5 serial numbers are used as "accession numbers" from
+               /large/sn-hash8-accession-by-sn
+        md5sum /large/sn-hash8-accession-by-sn
+        b9663bbd331646607452485b6e7d8f52  /large/sn-hash8-accession-by-sn
+
+INPUT flat DART tape file from its pathname
+                /large/flat_DART_data8
+        md5sum  /large/flat_DART_data8 # takes about 14 minutes
+        3adbff17fd7f9f6eb9107755594ae0b9  /large/flat_DART_data8
+
+ which contains a concatenated image of all the reels of DART tape
+ in a format called "data8" for "8 bytes per PDP10 word"
+ where the 36-bit PDP10 words are right justified in 64-bits.
+--------------------------------------------------------------------------------------- *
+PROCESSING
+
+ de-frag         concatenate DART-7track-record data-payloads into SAIL-blobs
+ de-dup          hash digest SAIL-blob-data8-format to get serial numbered unique blob content
+ de-damage       Mark files with Previous-Media-Error or defective headings,
+ de-flate        omit excessive record padding and redundancy
+        then in later processing
+ de-tox          omit ephemera
+
+ This remix "knows" in advance that the input 7track record statistics are:
+ case  6: //     5,486. tape reel BOT and EOT markers HEAD and TAIL records
+ case -3: // 1,886,472. file start records
+ case  0: // 1,045,270. file continue records
+ case -9: //        63. gap records
+
+cut -c9-12 /large/log/rib|sort|uniq -c > rib-record-type-counts
+1045268 /  0
+1886474 / -3
+   5486 /  6
+     63 / -9 GAPs from 1998 tape reading defects
+2937291 Total
+ and that the maximum dart 7track record size is a GAP at 382438. words
+ and that the maximum dart 7track record size not-a-GAP is 10240. words
+ and that the minimum dart 7track record size       GAP is    27. words
+ and that the minimum dart 7track record size not-a-GAP is    12. words
+ and that the maximum file         blob  size is
+ and that the 1990 MCOPY *ERROR.ERR records number 6621.
+ and that the 1998 gaps                     number   63.
+
+ Farb=0 indicates the highest level of authencity with a bit-exact equivalence to
+ the data read from the 229 reels of physical DART 9track tape in 1998.
+
+ This Remix program generates farb=1 FILES for the BOT and EOT tape type=6 records, 
+ the ERROR.ERR[ERR,OR␣] records, and for the -9,,Gap records.
+--------------------------------------------------------------------------------------- *
+*/
+
+// This union defines PDP10 bit-field names within one Big Endian 36-bit PDP10 word.
+// The programming language 'C' x86 words are Little Endian, so Right comes before Left.
+    
+/* Read the 229 reels of concatenated 9-track DART tapes
+ *                 from the 85GB file named: /large/flat_DART_data8
+ *     lookup blob hash serial numbers from: /large/sn-hash8-accession-by-sn
+ * ------------------------------------------------------------------------------------ *
+ *      D       A       R       T       -       R       E       M       I       X       *
+ * ------------------------------------------------------------------------------------ *
+ echo -n 'copyrightⒸ2016-2019 Bruce_Guenther_Baumgart software_license:GPL-v3.'
+
+ INPUT file pathnames and MD5 values are given in the next paragraph.
+ Setup the OUTPUT absolute directory pathnames like so,
+
+        mkdir -p /large/{csv,log,unix}  /large/{data8,text}/sn
+
+ Typical execution is:
+
+        time dart-remix
+
+--------------------------------------------------------------------------------------- *
+INPUT blob md5 serial numbers are used as "accession numbers" from
+               /large/sn-hash8-accession-by-sn
+        md5sum /large/sn-hash8-accession-by-sn
+        b9663bbd331646607452485b6e7d8f52  /large/sn-hash8-accession-by-sn
+
+INPUT flat DART tape file from its pathname
+                /large/flat_DART_data8
+        md5sum  /large/flat_DART_data8 # takes about 14 minutes
+        3adbff17fd7f9f6eb9107755594ae0b9  /large/flat_DART_data8
+
+ which contains a concatenated image of all the reels of DART tape
+ in a format called "data8" for "8 bytes per PDP10 word"
+ where the 36-bit PDP10 words are right justified in 64-bits.
+--------------------------------------------------------------------------------------- *
+PROCESSING
+
+ de-frag         concatenate DART-7track-record data-payloads into SAIL-blobs
+ de-dup          hash digest SAIL-blob-data8-format to get serial numbered unique blob content
+ de-damage       Mark files with Previous-Media-Error or defective headings,
+ de-flate        omit excessive record padding and redundancy
+        then in later processing
+ de-tox          omit ephemera
+
+ This remix "knows" in advance that the input 7track record statistics are:
+ case  6: //     5,486. tape reel BOT and EOT markers HEAD and TAIL records
+ case -3: // 1,886,472. file start records
+ case  0: // 1,045,270. file continue records
+ case -9: //        63. gap records
+
+cut -c9-12 /large/log/rib|sort|uniq -c > rib-record-type-counts
+1045268 /  0
+1886474 / -3
+   5486 /  6
+     63 / -9
+2937291 Total
+ and that the maximum dart 7track record size is a GAP at 382438. words
+ and that the maximum file  blob  size is
+ and that the 1990 MCOPY *ERROR.ERR records number 6621.
+ and that the 1998 gaps                     number   63.
+
+ Farb=0 indicates the highest level of authencity with a bit-exact equivalence to
+ the data read from the 229 reels of physical DART 9track tape in 1998.
+
+ This Remix program generates farb=1 FILES for the BOT and EOT tape type=6 records, 
+ the ERROR.ERR[ERR,OR␣] records, and for the -9,,Gap records.
+--------------------------------------------------------------------------------------- *
+*/
+
+// Doctored seven-bit SAIL-ASCII into UTF-8 string table.
+//   ======================================================================
+//    ↓αβ∧¬επλ\t\n\v\f\r∞∂⊂⊃∩∪∀∃⊗↔_→~≠≤≥≡∨ !\"#$%&'()*+,-./0123456789:;<=>?
+//   @ABCDEFGH I J K L MNOPQRSTUVWXYZ[\\]↑←'abcdefghijklmnopqrstuvwxyz{|⎇}␈
+//   ======================================================================
+// The remix TEXT conversion omits NUL,  VT, RETURN,   ALT and RUBOUT
+//          which are encoded as  \000 \013    \015  \0175    \0177
+//
+// Since 2018, the Stanford-ALT-character in SAILDART is represented in unicode as § U00A7,
+// which resembles the dollar-sign $ in old SAIL documentation,
+// and is not quite as ugly as ⎇ or Ⓢ used formerly in SAILDART material.
+
+//
+// Magnetic Tape defects include bit-drop outs and missing frames,
+// that is failures to detect magnetic "one" markings when reading the tape.
+// Given two nearly identical files, the file with the highest bit count
+// may be more likely to be the accurate copy.
+//
+// Initialization, at top of main:
+// for(n=16;n<4095;n++){
+// number_of_bits[n] = number_of_bits[n/256]+number_of_bits[(n/16)%16]+number_of_bits[n%16];
+// number_of_bits[n] = number_of_bits[n>>8 ]+number_of_bits[(n>>4)&15]+number_of_bits[n&15];
+// }
+//
+// Missing (or extra) zero mag-tape-data frames are detectable in DMP executibles
+// when the static analysis opcode pattern of a well known DMP image goes bananas.
+// The beacon landmark PUSHJ positions go AWOL on the damaged DMP files.
+//
+//                         0 1 2 3  4 5 6 7  8 9 A B  C D E F
+int number_of_bits[4096]={ 0,1,1,2, 1,2,2,3, 1,2,2,3, 2,3,3,4, };
+
+
+
+#if 0 // NOT implemented. NOT needed (yet) in light of the CSV representation. 2018.
+// BINARY data8 remix record for a Tag-and-Blob representation for the WAITS-File-System.
+typedef struct {
+  uint64 record_length:32,:32, // word0
+    zero_padding:32,      :32, // word1 PAD zero count words AFTER final non-zero word.
+  //
+    prj:18,prg:18,        :28, // word2
+    filnam:36,            :28, // word3
+    ext:18,typ:18,        :28, // word4
+    mdate:18,mtime:18,    :28, // word5
+  //
+    wrtppn:36,            :28, // word6
+    wrtool:36,            :28, // word7
+  //    
+    sn:20,damage:6,       :38, // word8
+    drn:23,prot:9,mode:4, :28; // word9
+} tag;
+tag Tag;
+#endif
+
+
+
+//
+//      Date Time stamps ( iso_mdatetime will become the most relevant )
+//      created, modified, accessed, dumped
+//
+int cdate, mdate, adate, ddate;
+int        mtime, atime;
+//
+// Remix Prescience
+//
+// 1972-11-05 11:59     Tape #0001 BOT is at Noon 5 November 1972, nearly 18 years later
+// 1990-08-17 17:08     Tape #3228 the final file ALLDIR.DAT[DMP,SYS] is written.
+//                      so the DART records span ten million minutes, since
+//                      timestampdiff( minute, '1972-11-05 11:59',' 1990-08-17 17:08' )
+//                      is 9,351,669.
+//
+// De-damage remixing enforces FILE date consistency using the tape reel BOT dates.
+// When a FILE mdate is out of range, it defaults to the BOT date for its track7 tape number,
+// since that would be the maximum possible date for the file.
+//
+// .123456789.123456 'C' string begins at 0
+// 2020-08-15 09:17
+char iso_mcopy_bot_datetime[32]; // BOT9 date from MCOPY track9 BOT marker
+char iso_bdatetime[32]; // BOT7 date on prior BOT7 marker of track7 tape
+char iso_cdatetime[32]; // file system RIB alleged "creation" date
+char iso_mdatetime[32]; // usually seen file "modification" / "write" date
+char iso_adatetime[32]; // "access" date
+char iso_ddatetime[32]; // "dump" date
+
+
+bgb@work9$ time remix -h
+option h histogram verification
+./large/TimeCapsule/flat_DART_data8 filesize 90314177512 bytes
+histogram of DART record typescords    reel P3228    tape P2984 
+type  6:      5486 BOT and EOT
+type -3:   1886474 file start 
+type  0:   1045268 file continuation
+type -9:        63 gaps 
+  Total:   2937291 records
+
+real	14m2.725s
+user	0m5.639s
+sys	0m24.224s
+bgb@work9$ 

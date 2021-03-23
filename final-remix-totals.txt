@@ -1,0 +1,24 @@
+    Progress REPORT :  99.76 % :  read 83.906 GBytes  2934188 records 1891592 files    reel P3228    tape# 2983   dump# 858
+    Progress REPORT :  99.81 % :  read 83.948 GBytes  2934811 records 1891666 files    reel P3228    tape# 2984   dump# 858
+    Progress REPORT : 100.00 % :  read 84.112 GBytes  2937292 records 1892023 files    reel P3228    tape# 2984   dump# 858
+
+  900642 blobs
+ 1892023 names
+ 1892023 dartfln file numbers
+ 2937292 dartrn record numbers
+
+G.histogram of DART record types
+type  6:      5486 BOT and EOT
+type -3:   1886474 file start 
+type  0:   1045268 file continuation
+type -9:        63 gaps 
+  Total:   2937291 records
+remix DONE
+
+
+real	231m19.232s
+user	165m50.088s
+sys	3m51.445s
+13879 seconds
+bgb@work9$ 
+

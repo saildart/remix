@@ -1,0 +1,33 @@
+# Loop mounted output container
+# -----------------------------
+
+
+# append loop mount line to /etc/fstab
+
+        echo /d/large/OUTPUT.container    /d/large/OUTPUT ext4 loop     0 2 >> /etc/fstab
+
+# create/confirm mount point directory
+
+        mkdir -p /d/large/OUTPUT
+        
+# create huge file to be the OUTPUT file system container
+
+cd /d/large
+>OUTPUT.container
+perl -e 'truncate("/d/large/OUTPUT.container",512*1024**3)'
+
+# optional Mickey Mouse with loop devices
+
+        losetup -f /d/large/OUTPUT.container
+        losetup -d /dev/loop#
+
+# make (or remake) ext4 file system -F -F dammit in the container
+
+        sudo umount /d/large/OUTPUT
+        sudo mkfs.ext4 -F /d/large/OUTPUT.container
+        sudo mount  /d/large/OUTPUT
+        sudo chown bgb:bgb /d/large/OUTPUT
+        rmdir /d/large/OUTPUT/lost+found
+        df -T -t ext4 -h /d/large/OUTPUT
+# EOF.
+
