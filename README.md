@@ -1,28 +1,32 @@
 # saildart/remix/README.md
 #       R       E        M       I       X
-        Execute the source file **remix.c**
-        to make the binary at path **/usr/local/bin/remix**
-        or bash command 'source remix.c'
-        
-        A simple 'makefile' exists,
-        so the bash command 'make' is shorter.
+To compile, just execute the source file __remix.c__
+to make a binary at path **/usr/local/bin/remix**
+or type the bash command 'source remix.c'.
+A simple 'makefile' exists, so just type 'make'.
 
-# the INPUT files are
-        md5 hash                         | path
-        -------------------------------- | ------------------------------
-        3adbff17fd7f9f6eb9107755594ae0b9 | large/flat_DART_data8
-        b9663bbd331646607452485b6e7d8f52 | large/sn-hash8-accession-by-sn
+# INPUT files
+Place a symbolic link named **./INPUT** pointing at the directory
+containing the two large time capsule files named **flat_DART_data8**
+and **sn-hash8-accession-by-sn**
+md5 hash                         | path
+-------------------------------- | ------------------------------
+3adbff17fd7f9f6eb9107755594ae0b9 | large/flat_DART_data8
+b9663bbd331646607452485b6e7d8f52 | large/sn-hash8-accession-by-sn
   
 # PROCESS the five D's
-        D          | description  
-        ---------- | --------------------------------------------------------------------------------
-        de-frag    | concatenate DART-7track-record data-payloads into SAIL-blobs
-        de-dup     | hash digest SAIL-blob-data8 to get serial numbered unique blob content
-        de-damage  | Mark files with Previous-Media-Error or defective headings
-        de-flate   | omit excessive record padding, redundancy, and in-band DART tables. (aka de-pad)
-        de-tox     | omit ephemera, legal hazards, dipolmatic faux pas [foh pahz] and Phở Soup.
+D          | description  
+---------- | --------------------------------------------------------------------------------
+de-frag    | concatenate DART-7track-record data-payloads into SAIL-blobs
+de-dup     | hash digest SAIL-blob-data8 to get serial numbered unique blob content
+de-damage  | Mark files with Previous-Media-Error or defective headings
+de-flate   | omit excessive record padding, redundancy, and in-band DART tables. (aka de-pad)
+de-tox     | omit ephemera, legal hazards, dipolmatic faux pas [foh pahz] and Phở Soup.
         
 # OUTPUT files
+Plase a symbolic link named **./OUTPUT** pointing at 100GB of empty space.
+For development I build loop mounted containers so the delete is rapid.
+
         reset-OUTPUT-container.bash
 
         data base tables into csv formated files /OUTPUT/csv/
@@ -63,8 +67,8 @@
         utf8.c       utf8.h
         
 # 'SQL' programs
-        the SQL scripts moved out of remix
-        saildart data base processing will require several new repositories
+The SQL scripts have been moved out of remix.
+The saildart data base processing will require several new repositories.
 
 #       R       E       L       I       N       K
 ## symbolic-link convenient pathnames to subsets of the /data8/ binary files
@@ -77,9 +81,9 @@ t1;awk '{printf("ln -s /data8/sn/%s /data8/nickname/%s\n",$1,$2)}' \
 # Initialize some SD chips ( say 128 GB )
 ## for offsite, cold-copy, time-capsule distribution
 
-        For example three SD usb chips appear
-        at device locations /dev/sde /dev/sdf /dev/sdg
-        so
+For example, I plugged in three USD SD chips which then appeared
+at device locations /dev/sde /dev/sdf /dev/sdg
+so
 
 ```bash
         sudo bash
