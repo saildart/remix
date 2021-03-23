@@ -8,7 +8,7 @@
         so the bash command 'make' is shorter.
 
 # the INPUT files are
-        md5 hash | path
+        md5 hash                         | path
         -------------------------------- | ------------------------------
         3adbff17fd7f9f6eb9107755594ae0b9 | large/flat_DART_data8
         b9663bbd331646607452485b6e7d8f52 | large/sn-hash8-accession-by-sn
@@ -60,45 +60,21 @@
         main_command_options.c
         main_usage.c
         
-# auxillary
+# auxillary Read Only
         md5.c        md5.h
         utf8.c       utf8.h
-
-# other 'C' programs started before 2020
-        dart-flatten-2016.c
-        dart-remix.c
-        old-undart-2017.c
-        old-undart-2018.c
-        remix-combo.c
-        undart-2018.c
-        mmap-dart.c
         
 # 'SQL' programs
-       t1;./_main_batch.bash;t2
-       
-       _main_batch.bash # executes the following five SQL files
-       
-        step10_blobs_and_tags.sql       # create REMIX tables : nametag and blobsnhash
-        step20_MFD_tables.sql           # curated MFD  tables : mx  my  mz
-        step30_misc_tables.sql          # create MISC tables  : DCPower  thesis  lesterspin
-        step40_WhoWhen1.sql             # first level Who When tables :
-        step50_WhoWhen2.sql             #  more       Who When curation :
-
-# side show experiments, use mmap and/or python3
-
-        mmap-dart.c
-        simply-read-flat-dart.c
-
-        hex2base64.py2  // binascii module
-        hex2base64.py   // struct and base64 modules easier to deploy now (RFC_3548_urlsafe)
+        the SQL scripts moved out of remix
+        saildart data base processing will require several new repositories
 
 #       R       E       L       I       N       K
 ## symbolic-link convenient pathnames to subsets of the /data8/ binary files
 
-...
+```
 t1;awk '{printf("ln -s /data8/sn/%s /data8/nickname/%s\n",$1,$2)}' \
         data/Disassemble./sn_fn|bash;t2
-...
+```
 
 # Initialize some SD chips ( say 128 GB )
 ## for offsite, cold-copy, time-capsule distribution
@@ -107,7 +83,7 @@ t1;awk '{printf("ln -s /data8/sn/%s /data8/nickname/%s\n",$1,$2)}' \
         at device locations /dev/sde /dev/sdf /dev/sdg
         so
 
-...bash
+```bash
         sudo bash
         mkdir -p /e1 /f1 /g1            \# make some mount points
 for x in e f g;do echo;
@@ -117,18 +93,18 @@ for x in e f g;do echo;
         mount /dev/sd${x}1 /${x}1;
 done
         chown bgb:bgb /e1 /f1 /g1       \# user access for copy commands
-...
+```
 
 # For excessive purity of the SAILDART archive byte vector
        Avoid PARTITION table
        Avoid FILE SYSTEM       
        Copy **flat_DART_data8** to SD without file system or partition table
-...
+```
 sudo bash
 time dd if=/d/large/flat_DART_data8 of=/dev/sdd oflag=direct status=progress bs=64M
 90314177512 bytes (90 GB, 84 GiB) copied, 5963 s, 15.1 MB/s
 1345+1 records in
 1345+1 records out
 90314177512 bytes (90 GB, 84 GiB) copied, 5966.4 s, 15.1 MB/s
-...
+```
 \#real	99m26.408s
