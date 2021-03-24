@@ -1,18 +1,33 @@
 # saildart/remix/README.md
-#       R       E        M       I       X
+![foo](remix-new.jpeg "banner")
+# to build remix
 To compile, just execute the source file __remix.c__
 to make a binary at path **/usr/local/bin/remix**
 or type the bash command 'source remix.c'.
 A simple 'makefile' exists, so just type 'make'.
 
+# title REMIX
+        remix - read SAILDART time-capsule
+              - read four curated feedback files, so remix can be done in one pass
+              - write time-capsule data into several formats 
+
+# SYNOPSIS
+        remix extracts stuff 
+        from the SAILDART archive Time-Capsule file named 'flat_DART_data8',   
+        which should have the md5 hash value 3adbff17fd7f9f6eb9107755594ae0b9.  
+        remix writes a Smörgåsbord of 21st century formats for historical study. 
+
 # INPUT files
 Place a symbolic link named **./INPUT** pointing at the directory
-containing the two large time capsule files named **flat_DART_data8**
+containing the two large time capsule files are named **flat_DART_data8**
 and **sn-hash8-accession-by-sn**
 md5 hash                         | path
 -------------------------------- | ------------------------------
 3adbff17fd7f9f6eb9107755594ae0b9 | large/flat_DART_data8
-b9663bbd331646607452485b6e7d8f52 | large/sn-hash8-accession-by-sn
+9c763af70e2c41ca1f646668df13c7df | feedback/perm-darn-byte
+b9663bbd331646607452485b6e7d8f52 | feedback/sn-hash8-accession-by-sn
+8a1d360dd7a7d34476c82d373c375a87 | feedback/tape-dumpset-reel.csv
+c61314d68b7f24337e70309cc8a4118e | feedback/tape-fln-order
   
 # PROCESS the five D's
 D          | description  
@@ -62,11 +77,11 @@ For development I build loop mounted containers so the delete is rapid.
         main_command_options.c
         main_usage.c
         
-# auxillary Read Only
+# auxillary Read Only source files
         md5.c        md5.h
         utf8.c       utf8.h
         
-# 'SQL' programs
+# post remix SQL programs
 The SQL scripts have been moved out of remix.
 The saildart data base processing will require several new repositories.
 
@@ -96,8 +111,9 @@ for x in e f g;do echo;
 done
         chown bgb:bgb /e1 /f1 /g1       \# user access for copy commands
 ```
-
-# For excessive purity of the SAILDART archive byte vector
+# Practical copy of time-capsule on SD chip
+  The chip labeled **flat_DART_data8** has one GNU/Linux ext4 partition with the 85 Gigabyte input file for remix.
+# Optional excessive purity of the SAILDART archive byte vector
        Avoid PARTITION table
        Avoid FILE SYSTEM       
        Copy **flat_DART_data8** to SD without file system or partition table
