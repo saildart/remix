@@ -1,6 +1,6 @@
 #if 0 // remix.c -*- mode:C; coding:utf-8; -*-
 NAME="remix"
-SRC="/data/DART.remix"
+SRC="/data/Remix."
 DST="/usr/local/bin"
 #           -Wall
 gcc -g -m64       -Werror -o $DST/$NAME  $SRC/$NAME.c && echo OK || echo FAILED
