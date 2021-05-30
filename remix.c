@@ -1,11 +1,12 @@
-#if 0 // remix.c -*- mode:C; coding:utf-8; -*-
+#if 0 // -*- mode:C;coding:utf-8; -*-
 NAME="remix"
-SRC="/data/Remix."
-DST="/usr/local/bin"
-#           -Wall
-gcc -g -m64       -Werror -o $DST/$NAME  $SRC/$NAME.c && echo OK || echo FAILED
-echo $DST/$NAME
-return 2>/dev/null || exit 0
+  full_path=$(realpath $0)
+  echo FROM $full_path
+  SRC=$(dirname $full_path)
+  DST="/usr/local/bin"
+  gcc -g -m64 -Wall -Werror -o $DST/$NAME  $SRC/$NAME.c && echo -n OK || echo -n FAILED
+  echo " $DST/$NAME"
+  return 2>/dev/null || exit 0
 #endif
 
 #include "main_bigtop.c"  
@@ -22,8 +23,8 @@ return 2>/dev/null || exit 0
 #include "main_command_options.c"
 #include "main_usage.c"
                                                                      
-// ------------------------------------------------------------------------------------------- 100
-// ----------------------------------------------------------------------------------------------------- 110
+  // ------------------------------------------------------------------------------------------- 100
+  // ----------------------------------------------------------------------------------------------------- 110
 
   int
   main(int ac, char *av[])
@@ -93,7 +94,7 @@ return 2>/dev/null || exit 0
    // O.type     =fopen("./OUTPUT/csv/type","w");assert(errno==0);
 
    // row 1 for the column names
-   fprintf( O.address,  "      0,          dartname,         d,    seekaddr,    drn,tape,dmp,reel\n");
+   fprintf( O.address,  "      0,          dartname,         d,    seekaddr,    drn,tape,box,reel\n");
    fprintf( O.blobattr, "      0,          dartname,         d,    sn,                           hash8,  taxon,   seen,   zcnt, notnul,  u8cnt,  space,  alnum,   other,   bits,  bytes,    nul, badtxt,     ff,     nl,     pd,    rub,   daro\n");
    fprintf( O.dates,    "      0,          dartname,         d,              dttape,              dtreel,              mdt,           access,      birth,     ddump\n");
    fprintf( O.nametag,  "      0,          dartname,         d,    sn,  words,  bytes,  wrtppn,  tool,             mdt, protdots,dam,           unixname\n");
@@ -171,7 +172,7 @@ return 2>/dev/null || exit 0
                  100.0 * (float)seekaddr / (float)filesize,
                  (float)seekaddr/(1024.*1024.*1024.),
                  dartrn, dartfln,
-               reel_number, tape_number, dump_number );
+                 reel_number, tape_number, dump_number );
        }
        dartrn_previous = dartrn;
      }
@@ -184,8 +185,8 @@ return 2>/dev/null || exit 0
          // Output blob to /data8/sn/# and /text/sn/#
          de_dup( dartrn, dartfln, type, length );
          output_csv( dartrn, dartfln, tape );
-         // symbolic links back to serial numbered DART file content blobs.
-         if(G.fancy_flag)       symlink_trailblazer();
+         // place hard links back to serial numbered DART file content blobs.
+         if(G.fancy_flag) link_trailblazer();
          // prepare for building the next file
          reset_globals();
        }

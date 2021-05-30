@@ -71,7 +71,9 @@ EXAMPLES \n\
         remix -n0       # do nothing after initialization and path sniffing \n\
         remix -p1       # one tape \n\
         remix -p3000    # one reel \n\
- \n\
+\n\
+t1;time remix -a -d -p3000 -n229;t2\n\
+\n\
 ");
   exit(0);
 }

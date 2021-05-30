@@ -378,10 +378,16 @@ convert_blob_into_utf8(){
   case EOT7:
   case BOT9:
   case EOT9:
+  case BOT:
+  case EOT:
   case XOT:
   case GAP:
   case ERRBLOB:
-    return; // not TEXT
+    return;     // the Above are not TEXT
+  case BINARY:  // To-Be-Determined
+  case ETEXT:
+  case OTEXT:
+    break;
   }
   assert(taxon==BINARY); // still at default ? only file-start or file-continue records get to here.
   // Judgement: Is this blob clean good-looking seven-bit text ?
@@ -407,15 +413,18 @@ output_blob_sn(){
   char sn_path_text[64];
   // DATA8
   // Write blob to Serial Numbered path with eight bytes per PDP10 word.
-  errno=0;
+  errno=0;            // 0123456789.123456789.
   sprintf(sn_path_data8,"./OUTPUT/data8/sn/%06d",serial_number);
   if( G.data8_flag )
     if(access(sn_path_data8,F_OK)==-1){// Test for Non-Existence
-      sno = open( sn_path_data8, O_CREAT | O_WRONLY | O_TRUNC, 0400 );
+      sno = open( sn_path_data8, O_CREAT | O_WRONLY | O_TRUNC, 0600 );
       if (!(sno>0)){perror("WTF:");fprintf(stderr,"Open failed filename sn_path='%s'\n", sn_path_data8);exit(1);}
       bytcnt = B.seen * 8;
       n = write( sno, blob, bytcnt );
       assert( n == bytcnt );
+      // Equivalent to ≡ setfattr -n user.sn -v 001234 /OUTPUT/data8/sn/001234
+      n = fsetxattr( sno, "user.sn", sn_path_data8+18, 6, 0 );
+      if(n)handle_error("fsetxattr");
       assert(!close( sno ));
       touch_file_modtime( sn_path_data8, iso_mdatetime );
     }
@@ -424,13 +433,16 @@ output_blob_sn(){
   errno=0;
   if( G.text_flag )
     if( taxon==ETEXT || taxon==OTEXT ){
+      //                    0123456789.123456789.
       sprintf(sn_path_text,"./OUTPUT/text/sn/%06d",serial_number);
       if(access(sn_path_text,F_OK)==-1){// Test for Non-Existence
-        sno = open( sn_path_text, O_CREAT | O_WRONLY | O_TRUNC, 0444 );
+        sno = open( sn_path_text, O_CREAT | O_WRONLY | O_TRUNC, 0644 );
         if (!(sno>0)){perror("WTF:");fprintf(stderr,"Open failed filename sn_path_text='%s'\n", sn_path_text);exit(1);}
         bytcnt = strlen(utf8);
         n = write( sno, utf8, bytcnt );
         assert( n == bytcnt );
+        // Equivalent to ≡ setfattr -n user.sn -v 001234 /OUTPUT/text/sn/001234
+        n = fsetxattr( sno, "user.sn", sn_path_text+17, 6, 0 );
         assert(!close( sno ));
         touch_file_modtime( sn_path_text, iso_mdatetime );
       }

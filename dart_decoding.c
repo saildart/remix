@@ -274,7 +274,7 @@ sailwaits_filenames(){
   */
   
   // For [2,2] file names, spaces become underbars.
-  if( Vaddr->prg == 022 &
+  if( Vaddr->prg == 022 &&
       Vaddr->prj == 022 ){    
     space_to_underbar( FILNAM );
   }else{

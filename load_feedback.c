@@ -91,8 +91,9 @@ load_seekaddress(){
   // seek address table initialization
   char *path="./FEEDBACK/perm-darn-byte";
   FILE *table;
-  int n,p,perm,darn;
+  int p,perm,darn;
   off_t byte;
+
   table = fopen(path,"r");
   if(!table) handle_error("perm-darn-byte");
   for (p=0;p<=3229;p++){
@@ -154,8 +155,7 @@ load_tape_fln(){
   // tape fln table initialization
   char *path="./FEEDBACK/tape-fln-order";
   FILE *table;
-  int n,slot,tape,fln;
-  off_t byte;
+  int slot,tape,fln;
   table = fopen(path,"r");
   if(!table) handle_error("tape-fln-order");
   for ( slot=1; slot<=2985; slot++ ){

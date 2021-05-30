@@ -2,11 +2,12 @@
 
 void
 command_line_options(int ac,char *av[]){
-  int c, digit_optind=0;  
+  int c;
+  // int digit_optind=0;  
   G.perm = G.rcrd = G.count = 1;
   G.unit = "tape";
   while(1){
-    int this_option_optind = optind ? optind : 1;
+    // int this_option_optind = optind ? optind : 1;
     int option_index = 0;
     static struct option long_options[] = {
       {"perm",   required_argument, &G.perm,    1 }, // input span
@@ -74,9 +75,9 @@ int min(int x, int y){return (x<y) ? x : y;}
 void
 span_validation(){
   // span specification; validate, fix up or reject.
-  if((G.perm!=0) &&
-     (   1<=G.perm && G.perm<=2984) ||
-     (3000<=G.perm && G.perm<=3228)){
+  if( G.perm!=0 &&
+      ( (1<=G.perm && G.perm<=2984) ||
+        (3000<=G.perm && G.perm<=3228))){
     G.unit = G.perm<3000 ? "tape" : "reel";
     G.first =  G.perm;
     while( dartrecntable[G.first]==0 ){
